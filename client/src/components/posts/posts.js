@@ -7,7 +7,7 @@ import { CircularProgress, Grid } from "@mui/material";
 const Posts = ({setCurrentId,currentId}) => {
     const posts = useSelector((state) => state.posts);
     const classes = useStyles();
-    console.log(posts)
+     //console.log(posts)
     return (
         !posts.length ? <CircularProgress sx={{margin:20}}/> : (
             <Grid container spacing={2} alignItems="stretch" direction="row">

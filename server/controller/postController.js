@@ -11,26 +11,9 @@ export const getPosts =async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-    const { creator, title, selectedFile, tags, message } = req.body;
+    const post = req.body;
     
-    if (!creator) {
-        return res.status(400).json({ message: "Creator is required!" });
-    }
-     if (!title) {
-        return res.status(400).json({ message: "Title is required!" });
-     }
-     if (!selectedFile) {
-        return res.status(400).json({ message: "selectedFile is required!" });
-     }
-    
-     if (!tags) {
-        return res.status(400).json({ message: "Tags is required!" });
-     }
-     if (!message) {
-        return res.status(400).json({ message: "Message is required!" });
-     }
-    
-    const newPost = new PostMessage(req.body);
+    const newPost = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
     try {
     
         const post=await newPost.save();
@@ -70,12 +53,27 @@ export const deletePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
     const { id } = req.params;
+     
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
+
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: "No Post with that id" });
     try {
-         const post = await PostMessage.findById(id);
-        const updatePost = await PostMessage.findByIdAndUpdate(id, { likeCount: post.likeCount + 1 });
+        const post = await PostMessage.findById(id);
+         
+        const index = post.likes.findIndex((id) => id === String(req.userId));
+             
+        if (index == -1) {
+            //like to post
+            post.likes.push(req.userId);
+            
+        } else {
+            //dislike to post
+            post.likes=post.likes.filter((id) => id !== String(req.userId));
+        }
         
-        return res.json(updatePost);
+        const updatePost = await PostMessage.findByIdAndUpdate(id,post);
+        //console.log(updatePost)
+        return res.json(post);
     } catch (err) {
         return res.status(500).json(err);
     }

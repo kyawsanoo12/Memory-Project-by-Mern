@@ -8,10 +8,11 @@ import { Box } from "@mui/system";
 
 
 
-const Form = ({currentId,setCurrentId}) => {
+const Form = ({ currentId, setCurrentId }) => {
+    const classes = useStyles();
     const dispatch = useDispatch();
     const posts = useSelector((state) => state.posts);
-    const [postData, setPostData] = useState({ creator: "", title: "", message: "", tags: "", selectedFile: "" });
+    const [postData, setPostData] = useState({  title: "", message: "", tags: "", selectedFile: "" });
          const post = posts.find((p) => p._id === currentId);
     
 
@@ -20,28 +21,41 @@ const Form = ({currentId,setCurrentId}) => {
             setPostData(post);
         }
     },[post])
+    
+      const user = JSON.parse(localStorage.getItem("profile"));
 
     const handleSubmit = (e) => {
+      
         e.preventDefault();
         if (currentId) {
-            dispatch(updatePost(currentId, postData));
+            dispatch(updatePost(currentId, {...postData,name:user?.result?.name}));
         } else {
-            dispatch(createPost(postData));
+            dispatch(createPost({...postData,name:user?.result?.name}));
         }
         clear();
 
     }
     const clear = () => {
-        setPostData({ creator: "", title: "", message: "", tags: "", selectedFile: "" });
+        setPostData({ title: "", message: "", tags: "", selectedFile: "" });
         setCurrentId(null);
     }
-    const classes = useStyles();
+    
+    if (!user?.result?.name) {
+        return (
+            <Paper className={classes.paper}>
+                <Typography variant="h6" alignItems="center">
+                    Please Sign In to create your own memories and other's like memories</Typography>
+            </Paper>
+        )
+    }
+
+
     return (
         <Paper varient="outlined" square elevation={4}>
             <form autoComplete="off" noValidate className={classes.form} onSubmit={handleSubmit} style={{ padding: "20px" }}>
                 <Typography variant="h6">{currentId? "Update" : "Create"} a Memory</Typography>
 
-                <TextField id="outlined-basic" variant="outlined" sx={{margin:"10px"}} label="Creator" name="creator" value={postData.creator} onChange={(e)=>setPostData({...postData,creator:e.target.value})} fullWidth required/>
+                
                 <TextField variant="outlined"  sx={{margin:"10px"}} label="Title" name="title" value={postData.title} onChange={(e) => setPostData({ ...postData,title: e.target.value })} fullWidth required/>
                 <TextField variant="outlined"  sx={{margin:"10px"}}label="Message" name="message" value={postData.message} onChange={(e) => setPostData({ ...postData,message: e.target.value })} fullWidth required/>
                 <TextField variant="outlined"  sx={{margin:"10px"}} label="Tags" name="tags" value={postData.tags} onChange={(e) => setPostData({...postData, tags: e.target.value.split(",") })} fullWidth required/>

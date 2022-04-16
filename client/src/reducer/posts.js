@@ -5,9 +5,11 @@ export default (posts = [], action) => {
         case DELETE:
             return posts.filter((p) => p._id !== action.payload);
         case UPDATE:
-            case LIKE:
+        case LIKE:
+            
             return posts.map((post) => post._id === action.payload._id ? action.payload : post);
         case CREATE:
+            
             return [...posts,action.payload];
         case FETCH_ALL:
             return action.payload;

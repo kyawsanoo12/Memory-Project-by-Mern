@@ -1,13 +1,26 @@
 import axios from "axios";
 
-const url = "https://memory-project-app.herokuapp.com/posts";
+const Api = axios.create({ baseURL: "https://memory-project-app.herokuapp.com/" });
 
-export const fetchPost = () => axios.get(url);
+Api.interceptors.request.use((req) => {
+    if (localStorage.getItem("profile")) {
+          req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("profile")).token}`;
+    }
+  
 
-export const createPost = (newpost) => axios.post(url, newpost);
+    return req;
+})
 
-export const updatePost = (id, post) => axios.patch(`${url}/${id}`, post);
+export const fetchPost = () => Api.get("/posts");
 
-export const deletePost = (id) => axios.delete(`${url}/${id}`);
+export const createPost = (newpost) => Api.post("/posts", newpost);
 
-export const likePost = (id) => axios.patch(`${url}/${id}/likePost`);
+export const updatePost = (id, post) => Api.patch(`/posts/${id}`, post);
+
+export const deletePost = (id) => Api.delete(`/posts/${id}`);
+
+export const likePost = (id) => Api.patch(`/posts/${id}/likePost`);
+
+export const signIn = (formData) => Api.post("/user/signin", formData);
+
+export const signUp = (formData) => Api.post("/user/signup", formData);
