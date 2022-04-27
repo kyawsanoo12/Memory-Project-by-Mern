@@ -11,7 +11,9 @@ Api.interceptors.request.use((req) => {
     return req;
 })
 
-export const fetchPost = () => Api.get("/posts");
+export const fetchPosts = (page) => Api.get(`/posts?page=${page}`);
+
+export const fetchPost = (id) => Api.get(`/posts/${id}`);
 
 export const createPost = (newpost) => Api.post("/posts", newpost);
 
@@ -24,3 +26,5 @@ export const likePost = (id) => Api.patch(`/posts/${id}/likePost`);
 export const signIn = (formData) => Api.post("/user/signin", formData);
 
 export const signUp = (formData) => Api.post("/user/signup", formData);
+
+export const fetchPostBySearch = ({ search, tags }) => Api.get(`/posts/search?searchQuery=${search || "none"}&tags=${tags}`);

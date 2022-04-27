@@ -4,16 +4,21 @@ import useStyles from "./style";
 import { useSelector } from "react-redux";
 import { CircularProgress, Grid } from "@mui/material";
 
-const Posts = ({setCurrentId,currentId}) => {
-    const posts = useSelector((state) => state.posts);
+const Posts = ({ setCurrentId, currentId }) => {
+    const { posts, isLoading } = useSelector((state) => state.posts);
+   
     const classes = useStyles();
-     //console.log(posts)
+   
+    if (!posts && !isLoading) {
+        return console.log("No Post");
+    }
+    
     return (
-        !posts.length ? <CircularProgress sx={{margin:20}}/> : (
-            <Grid container spacing={2} alignItems="stretch" direction="row">
-                {posts.map((post) => {   
+        isLoading ? <CircularProgress sx={{margin:20}}/> : (
+            <Grid container spacing={2} alignItems="stretch" direction="row" >
+                {posts?.map((post) => {   
                   return(
-                  <Grid item key={post._id} xs={12} sm={5}>
+                  <Grid item key={post._id} xs={12} sm={12} md={6} lg={4}>
                           <Post post={post} setCurrentId={setCurrentId}/>
                       </Grid>
                   )

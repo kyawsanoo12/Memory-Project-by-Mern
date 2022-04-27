@@ -2,6 +2,7 @@ import { Grid, TextField,InputAdornment } from "@mui/material";
 import React from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import EmailIcon from '@mui/icons-material/Email';
 
 const Input = ({ name, half, label, type, handleShowPassword, handleChange }) => {
     return (
@@ -21,7 +22,14 @@ const Input = ({ name, half, label, type, handleShowPassword, handleChange }) =>
                         </InputAdornment>
                         
                     )                
-                }:null}
+                } : (name == "email" ? {
+                        endAdornment: (
+                        <InputAdornment position="end"><EmailIcon/></InputAdornment>
+                    )
+                }:null)}
+            
+                
+            
             />
             </Grid>
     )

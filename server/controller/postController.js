@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 import PostMessage from "../model/postModel.js";
 
-export const getPosts =async (req, res) => {
+export const getPosts = async (req, res) => {
+    const { page } = req.query;
+    const LIMIT = 6;
+    const searchIndex = (Number(page) - 1) * LIMIT;
     try {
-        const posts = await PostMessage.find();
-        return res.status(200).json(posts);
+        const total = await PostMessage.countDocuments({});
+        const posts = await PostMessage.find({}).sort({_id:-1}).limit(LIMIT).skip(searchIndex);
+        return res.status(200).json({ data:posts,currentPage:Number(page),numberOfPages:Math.ceil(total/LIMIT)});
     } catch (err) {
         return res.status(404).json({ message: err.message });
     }
@@ -12,14 +16,37 @@ export const getPosts =async (req, res) => {
 
 export const createPost = async (req, res) => {
     const post = req.body;
-    
-    const newPost = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
+     const newPost = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
     try {
-    
+        
         const post=await newPost.save();
         return res.status(201).json(post);
     } catch (err) {
         return res.status(409).json({ message: err.message });
+    }
+}
+
+export const getPostsBySearch = async (req, res) => {
+    const { searchQuery, tags } = req.query;
+    try {
+        const title = new RegExp(searchQuery, "i");
+        
+        const posts = await PostMessage.find({ $or: [{ title }, { tags: { $in: tags.split(",")  }
+}] });
+        return res.status(200).json({ data: posts });
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+}
+
+export const postDetail = async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        const post = await PostMessage.findById(id);
+        return res.status(200).json(post);
+    } catch (err) {
+        return res.status(500).json(err);
     }
 }
 

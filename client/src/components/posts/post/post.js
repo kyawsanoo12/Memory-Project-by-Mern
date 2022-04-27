@@ -1,4 +1,4 @@
-import {Card, CardMedia, Typography ,Button, CardContent, CardActions} from "@mui/material";
+import {Card, CardMedia, Typography ,Button, CardContent, CardActions, ButtonBase} from "@mui/material";
 import React from "react";
 import useStyles from "./style";
 import moment from "moment";
@@ -7,8 +7,10 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from "react-redux";
 import { deletePost, likePost } from "../../../actions/posts";
+import { useNavigate } from "react-router-dom";
 
-const Post = ({post,setCurrentId}) => {
+const Post = ({ post, setCurrentId }) => {
+    const history = useNavigate();
     const classes = useStyles();
     const user = JSON.parse(localStorage.getItem("profile"));
     const Likes = () => {
@@ -30,30 +32,33 @@ const Post = ({post,setCurrentId}) => {
 
     const dispatch = useDispatch();
     return (
-        <Card className={classes.card}>
-            <CardMedia image={post.selectedFile} component="img"  />
+        <Card className={classes.card} raised elevation={5} sx={{ maxWidth: 250 }} >
+          
+            <CardMedia image={post.selectedFile} component="img"  height="160"/>
             <div className={classes.overlay}>
                 <Typography variant="h6">{post.name}</Typography>
                 <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
             </div>
-            {(user?.result?._id === post?.creator || user?.result?.googleId == post?.creator) &&
+            {(user?.result?._id === post?.creator || user?.result?.googleId === post?.creator) &&
             <div className={classes.overlay2}>
                 <Button sx={{ color: "white" }} size="small" variant="text" onClick={() => setCurrentId(post._id)}>
                   <MoreHorizIcon fontSize="default"/>
                 </Button>
             </div>
                 }
-            <div className={classes.details}>
-                <Typography variant="body2" color="textSecondary">{post.tags.map((tag) => {
+              <ButtonBase onClick={()=>history(`/posts/${post._id}`)} className={classes.cardAction} > 
+            <div className={classes.details} >
+                <Typography variant="body2" color="textSecondary" sx={{position:"absolute",left:"20px"}}>{post.tags.map((tag) => {
                     return tag;
                 })}</Typography>
             </div>
             <div className={classes.title}>
-                <Typography variant="h5">{post.title}</Typography>
+                <Typography variant="h6">{post.title}</Typography>
             </div>
              <CardContent>
-                    <Typography  variant="body2" component="p" color="textSecondary">{ post.message}</Typography>
-            </CardContent>
+                    <Typography  variant="body2" component="p" color="textSecondary">{ post.message.substr("0","100")} ...</Typography>
+                </CardContent>
+                </ButtonBase>
             <CardActions className={classes.cardActions}>
                 <Button  size="small" color="primary" disabled={!user} onClick={()=>dispatch(likePost(post._id))}>
                    <Likes/>

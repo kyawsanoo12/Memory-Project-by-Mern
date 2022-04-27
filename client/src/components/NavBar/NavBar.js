@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { getPosts } from "../../actions/posts";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import decode from "jwt-decode";
-
+import memoryLogo from "../../images/memories-Logo.png";
 
 const NavBar = () => {
     const location = useLocation();
@@ -20,11 +20,12 @@ const NavBar = () => {
             const decodedToken = decode(token);
 
             if (decodedToken.exp * 1000 < new Date().getTime()) return logout();
-
+            
+           
            
         }
-            
-         setUser(JSON.parse(localStorage.getItem("profile")))
+            setUser(JSON.parse(localStorage.getItem("profile"))) 
+         
     },[location])
     const classes = useStyles();
    
@@ -39,11 +40,13 @@ const NavBar = () => {
 
     return (
         
-        <AppBar  position="static" color="inherit" sx={{flexDirection:"row"}} className={classes.appBar}> 
-            <Typography className={classes.heading} variant="h2" component="div" sx={{flexGrow:1}}>
-                Memories
-            </Typography>
+        <AppBar position="static" color="inherit" sx={{ flexDirection: "row" }} className={classes.appBar} > 
             
+            <Typography className={classes.heading} component={Link} to="/" sx={{ flexGrow: 1, display: "flex", flexDirection: "row", }}>
+                <Typography variant="h3" >Memories</Typography>
+                <img src={memoryLogo} height="45px" />
+            </Typography>
+                        
             <Toolbar className={classes.toolbar}>
                 {user ? (
                     <div className={classes.profile}>
