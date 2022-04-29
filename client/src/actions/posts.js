@@ -1,5 +1,5 @@
 import * as api from "../api/index";
-import { CREATE, DELETE, END_LOADING, FETCH_ALL, FETCH_BY_SEARCH, LIKE, START_LOADING, UPDATE, FETCH_POST } from "../constants/actionTypes";
+import { CREATE, DELETE, END_LOADING, FETCH_ALL, FETCH_BY_SEARCH, LIKE, START_LOADING, UPDATE, FETCH_POST ,COMMENT} from "../constants/actionTypes";
 import { useNavigate } from "react-router-dom";
 
 export const getPost = (id) => async (dispatch) => {
@@ -82,4 +82,13 @@ export const likePost = (id) => async (dispatch) => {
     } catch (err) {
         console.log(err);
     }
+}
+
+export const commentPost = (value, id) => async(dispatch) => {
+    try {
+        const { data } = await api.commentPost(value, id);
+        dispatch({ type: COMMENT, payload: data });
+    } catch (err) {
+        console.log(err);
+  }
 }

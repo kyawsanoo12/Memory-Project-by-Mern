@@ -1,12 +1,11 @@
 import axios from "axios";
 
-const Api = axios.create({ baseURL: "https://memory-project-app.herokuapp.com/" });
+const Api = axios.create({ baseURL: "https://memory-project-app.herokuapp.com" });
 
 Api.interceptors.request.use((req) => {
     if (localStorage.getItem("profile")) {
           req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("profile")).token}`;
     }
-  
 
     return req;
 })
@@ -22,6 +21,8 @@ export const updatePost = (id, post) => Api.patch(`/posts/${id}`, post);
 export const deletePost = (id) => Api.delete(`/posts/${id}`);
 
 export const likePost = (id) => Api.patch(`/posts/${id}/likePost`);
+
+export const commentPost = (value, id) => Api.post(`/posts/${id}/commentPost`, { value });
 
 export const signIn = (formData) => Api.post("/user/signin", formData);
 

@@ -4,6 +4,7 @@ import useStyles from "./style";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPost, getPostsBySearch } from "../../actions/posts";
+import Comments from "./commentSection";
 
 const PostDetail = () => {
      const dispatch = useDispatch();
@@ -57,7 +58,9 @@ const PostDetail = () => {
                 
                  <Divider sx={{ margin: "10px" }} />
                  <Typography variant="body2" sx={{ margin: "10px" }}>Real Chat- Comming Soon</Typography>
-                 <Divider sx={{ margin: "10px" }} />
+                     <Divider sx={{ margin: "10px" }} />
+                     <Comments post={post} />
+                     <Divider sx={{ margin: "20px" }}/>
                  
              </div>
                < div className={classes.mediaCol}>

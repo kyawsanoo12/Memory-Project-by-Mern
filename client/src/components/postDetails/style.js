@@ -58,6 +58,16 @@ export default makeStyles(() => ({
     display:"flex"
    
   },
+  commentsOuterContainer: {
+    display: "flex",
+    justifyContent:"space-between"
+  },
+  commentsInnerContainer: {
+    scrollBehavior:"smooth",
+    maxHeight: "200px",
+    overflowY: "auto",
+    margin: "10px",
+  },
 
   loadingPaper: {
     display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', borderRadius: '15px', height: '39vh',

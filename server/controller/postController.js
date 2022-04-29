@@ -105,3 +105,17 @@ export const likePost = async (req, res) => {
         return res.status(500).json(err);
     }
 }
+
+export const commentPost = async (req,res) => {
+    try {
+        const { value } = req.body;
+        const { id } = req.params;
+        const post = await PostMessage.findById(id);
+        
+       post.comments.push(value);
+        const newComments = await PostMessage.findByIdAndUpdate(id, post);
+        return res.json(newComments);
+    } catch (err) {
+        return res.status(500).send(err);
+    }
+}
